@@ -1,5 +1,5 @@
 {
-	"name": "AoC-2024-Rust",
+	"name": "AoC-2025-Rust",
 	"image": "mcr.microsoft.com/devcontainers/rust:latest",
 	"customizations": {
 		"vscode": {

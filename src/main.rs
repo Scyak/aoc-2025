@@ -5,7 +5,7 @@ use std::{
     path::Path,
 };
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use chrono::{Datelike, Local};
 use clap::{Parser, Subcommand};
 use days::*;
@@ -71,8 +71,10 @@ fn run_day(day: &Option<u32>) -> Result<()> {
 
     if !Path::new(&format!("input/day{day:02}.txt")).exists() {
         println!("No input found, attempting to fetch from AoC website.");
-        fetch_day(&Some(day))
-            .context("Failed to fetch input. Did you put your session token in a .token file?")?;
+        match fetch_day(&Some(day)) {
+            Ok(()) => (),
+            Err(e) => bail!("Failed to fetch input: {e}"),
+        }
         println!();
     }
 
@@ -112,7 +114,7 @@ fn fetch_day(day: &Option<u32>) -> Result<()> {
         .header(COOKIE, format!("session={token};"))
         .send()?
         .error_for_status()
-        .context("Couldn't retrieve input from AoC website. Did you put your session cookie in the .session file?")?;
+        .context("Couldn't retrieve input from AoC website. Did you put your session cookie in the .token file?")?;
 
     let input = response
         .text()
